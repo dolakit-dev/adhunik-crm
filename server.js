@@ -21,8 +21,10 @@ app.use((req, res, next) => {
   next();
 });
 
-async function startServer(portOverride) {
-  const PORT = portOverride || process.env.CRM_PORT || DEFAULT_PORT;
+async function startServer(portOverride, options = {}) {
+  const PORT = typeof portOverride === 'object'
+  ? (process.env.CRM_PORT || DEFAULT_PORT)
+  : (portOverride || process.env.CRM_PORT || DEFAULT_PORT);
   // Initialize Database (async for sql.js)
   await initializeDatabase();
   console.log('Database initialized.');
@@ -211,19 +213,19 @@ async function startServer(portOverride) {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
   });
 
+  if (!options.serverless) {
   app.listen(PORT, () => {
-    console.log(`\n  🛡️  Adhunik Pest Control CRM`);
-    console.log(`  ─────────────────────────`);
-    console.log(`  Server running at http://localhost:${PORT}\n`);
+    console.log(`Server running at http://localhost:${PORT}`);
   });
+}
 }
 
 // Export for Electron, or auto-start if run directly
 module.exports = { startServer, app };
 
-if (!process.versions.electron) {
+if (!process.versions.electron && !process.env.VERCEL) {
   startServer().catch(err => {
-    console.error('Failed to start server:', err);
+    console.error(err);
     process.exit(1);
   });
 }
