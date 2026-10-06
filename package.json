@@ -1,0 +1,57 @@
+{
+  "name": "pest-control-crm",
+  "version": "1.0.0",
+  "description": "PestShield Pro - Pest Control CRM Desktop Application",
+  "main": "electron.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "electron": "electron .",
+    "build": "electron-builder --win",
+    "build-portable": "electron-builder --win portable"
+  },
+  "build": {
+    "appId": "com.pestshield.crm",
+    "productName": "PestShield Pro CRM",
+    "copyright": "Copyright © 2026 PestShield Pro",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "**/*",
+      "!dist/**",
+      "!node_modules/.cache/**"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "icon": "icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": "icon.ico",
+      "uninstallerIcon": "icon.ico",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  },
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^18.0.5",
+    "express": "^4.18.2",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^10.0.13",
+    "pdf-lib": "^1.17.1",
+    "pdf-parse": "^2.4.5",
+    "sql.js": "^1.10.3"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.1.8"
+  }
+}

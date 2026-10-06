@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <linearGradient id="shield" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4285f4"/>
+      <stop offset="100%" stop-color="#1a56db"/>
+    </linearGradient>
+  </defs>
+  <!-- Shield shape -->
+  <path d="M128 20 L220 60 L220 130 C220 180 180 220 128 240 C76 220 36 180 36 130 L36 60 Z" fill="url(#shield)"/>
+  <!-- Bug icon -->
+  <g transform="translate(128,120)" fill="white">
+    <!-- Bug body -->
+    <ellipse cx="0" cy="10" rx="22" ry="28"/>
+    <ellipse cx="0" cy="-22" rx="14" ry="12"/>
+    <!-- Legs -->
+    <line x1="-22" y1="0" x2="-38" y2="-12" stroke="white" stroke-width="4" stroke-linecap="round"/>
+    <line x1="22" y1="0" x2="38" y2="-12" stroke="white" stroke-width="4" stroke-linecap="round"/>
+    <line x1="-24" y1="15" x2="-40" y2="20" stroke="white" stroke-width="4" stroke-linecap="round"/>
+    <line x1="24" y1="15" x2="40" y2="20" stroke="white" stroke-width="4" stroke-linecap="round"/>
+    <line x1="-20" y1="30" x2="-36" y2="38" stroke="white" stroke-width="4" stroke-linecap="round"/>
+    <line x1="20" y1="30" x2="36" y2="38" stroke="white" stroke-width="4" stroke-linecap="round"/>
+    <!-- Antennae -->
+    <line x1="-8" y1="-32" x2="-18" y2="-48" stroke="white" stroke-width="3" stroke-linecap="round"/>
+    <line x1="8" y1="-32" x2="18" y2="-48" stroke="white" stroke-width="3" stroke-linecap="round"/>
+    <!-- Cross out -->
+    <line x1="-35" y1="-35" x2="35" y2="45" stroke="#d93025" stroke-width="8" stroke-linecap="round"/>
+    <line x1="35" y1="-35" x2="-35" y2="45" stroke="#d93025" stroke-width="8" stroke-linecap="round"/>
+  </g>
+</svg>
