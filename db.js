@@ -2,7 +2,9 @@ const initSqlJs = require('sql.js');
 const fs = require('fs');
 const path = require('path');
 
-const dbPath = path.join(__dirname, 'crm.db');
+const dbPath = process.env.VERCEL
+  ? path.join('/tmp', 'crm.db')
+  : path.join(__dirname, 'crm.db');
 let db = null;
 let SQL = null;
 
