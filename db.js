@@ -67,7 +67,9 @@ function saveDb() {
 }
 
 async function initializeDatabase() {
-  SQL = await initSqlJs();
+  SQL = await initSqlJs({
+    locateFile: (file) => path.join(path.dirname(require.resolve('sql.js')), file)
+  });
   
   // Load existing database or create new one
   if (fs.existsSync(dbPath)) {
