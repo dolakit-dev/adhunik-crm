@@ -2,10 +2,29 @@
 
 // ===== API Helper =====
 const API = {
-  async get(url) { const r = await fetch(`/api${url}`); return r.json(); },
-  async post(url, data) { const r = await fetch(`/api${url}`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) }); return r.json(); },
-  async put(url, data) { const r = await fetch(`/api${url}`, { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) }); return r.json(); },
-  async del(url) { const r = await fetch(`/api${url}`, { method:'DELETE' }); return r.json(); },
+  async request(url, options = {}) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 60000);
+    try {
+      const r = await fetch(`/api${url}`, { ...options, signal: controller.signal });
+      if (!r.ok) {
+        let detail = '';
+        try { const body = await r.json(); detail = body && body.error ? body.error : ''; } catch (err) {}
+        throw new Error(detail || `Request failed (HTTP ${r.status})`);
+      }
+      return await r.json();
+    } catch (err) {
+      if (err.name === 'AbortError') throw new Error('Request timed out — please try again');
+      if (err instanceof TypeError) throw new Error('Cannot reach the server — please check your connection');
+      throw err;
+    } finally {
+      clearTimeout(timer);
+    }
+  },
+  get(url) { return API.request(url); },
+  post(url, data) { return API.request(url, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) }); },
+  put(url, data) { return API.request(url, { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) }); },
+  del(url) { return API.request(url, { method:'DELETE' }); },
 };
 
 // ===== Utility Functions =====
@@ -21,6 +40,10 @@ function showToast(msg, type='success') {
   document.getElementById('toastContainer').appendChild(t);
   setTimeout(() => t.remove(), 3500);
 }
+
+window.addEventListener('unhandledrejection', (e) => {
+  if (e.reason && e.reason.message) showToast(e.reason.message, 'error');
+});
 
 function openModal(title, body, footer='') {
   document.getElementById('modalTitle').textContent = title;
@@ -50,6 +73,7 @@ document.querySelectorAll('[data-page]').forEach(el => {
     e.preventDefault();
     document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
     el.classList.add('active');
+    document.getElementById('sidebar').classList.remove('open');
     navigateTo(el.dataset.page);
   });
 });
@@ -78,7 +102,11 @@ function navigateTo(page) {
   const container = document.getElementById('pageContainer');
   container.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Loading...</p></div>';
   const renderer = pageRenderers[page];
-  if (renderer) renderer(container);
+  if (renderer) {
+    Promise.resolve(renderer(container)).catch(err => {
+      container.innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-circle" style="color:var(--danger)"></i><p>Could not load this page.<br>${escapeHtml(err.message || 'Unknown error')}</p></div>`;
+    });
+  }
   else container.innerHTML = `<div class="empty-state"><i class="fas fa-tools"></i><p>${pageTitles[page] || page} module - Coming soon</p></div>`;
 }
 
